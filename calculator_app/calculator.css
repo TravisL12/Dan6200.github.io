@@ -75,11 +75,12 @@ td:hover {
 
 @media screen and (max-height: 768px)  {
     table {
-        height: 80vh;
-        width: 100%;
+        height: 90vh;
+        width: 90%;
         max-width: 360px;
         min-width: 168px;
         font-size: 2em;
+        margin:  10% auto;
     }
     thead {
         height: 20vh;
