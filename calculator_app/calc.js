@@ -96,22 +96,39 @@ class Calculator {
         if (isNaN(values) && values != '.') values = "Error";
         if (values instanceof Error) values = "Error";
 
-          
+        let valueIsNegtv;  
 
         if (isFinite(values) && values.toString().length > 9) {
             
+            if (values < 0) {
+                values = values.toString().slice(1);
+                valueIsNegtv = true;              
+            }
+        
             if (values != Math.trunc(values) && values > 1) {
                 let first4 = values.toString().slice(0, 5);
                 values = first4[0] + '.' + first4[1] + 'e' + (values.toString().length - 1);
+    
             } else if ( values > 1) {
-                let first4 = values.toString().slice(0, 5);               
-                values = first4[0]  + 'e' + (values.toString().length - 1);
+                let arr = values.toString().split('').slice(0, 5);
+                let num = arr.filter((n) => n != 0);
+                if (num.length == 1)  {
+                    values = num[0]  + 'e'  + (values.toString().length - 1);
+                } else {
+                    values = num[0] + '.' + num.slice(1, 5).join('') + 'e'  + (values.toString().length - 1);                    
+                }
+                
             }else {
                 let arr = values.toString().split('');
                 let num = arr.filter((n) => n != 0);
                 values = num[1] + '.' + num.slice(2, 5).join('') + 'e-' + (arr.length - num.length);
+               
             }
-                                  
+            
+            if (valueIsNegtv) {
+                values = '-'+ values;
+                valueIsNegtv = false;
+            }
              
         }
 
