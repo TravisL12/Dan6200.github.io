@@ -81,6 +81,7 @@ td:hover {
         min-width: 168px;
         font-size: 2em;
         margin:  10% auto;
+        display: none;
     }
     thead {
         height: 20vh;
