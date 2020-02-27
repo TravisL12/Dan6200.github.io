@@ -14,7 +14,7 @@ table {
     font-size: 4em;
     background-color: rgba(0, 0, 0, 0.685);
     color: white;
-    width: 90vw;
+    width: 100%;
     height: 80vh;    
     border-collapse: collapse;
     
@@ -64,20 +64,20 @@ td:hover {
  @media screen and (min-width: 640px)  {
     table {
         height: 80vh;
-        width: 56vw;
-        max-width: 560px;
+        width: 40vw;
+        max-width: 480px;
        
     }
     thead {
-        height: 25vh;
+        height: 40vh;
     }
 }
 
 @media screen and (max-height: 768px)  {
     table {
         height: 80vh;
-        width: 56vw;
-        max-width: 560px;
+        width: 100%;
+        max-width: 360px;
         min-width: 168px;
         font-size: 2em;
     }
