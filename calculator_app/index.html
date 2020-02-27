@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calculator program</title>
+    <link rel="stylesheet" href="calculator.css">
+    <script src="calc.js" async></script>
+</head>
+<body>
+
+    <table id="calculator">
+
+        <thead>
+            <tr>
+                <td colspan="4" id ="subscreen"></td>
+            </tr>
+            <tr>
+                <th colspan="4" id ="screen">0</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr id="keys">
+                <td data-type="operator" data-function="clear">C</td>
+                <td data-type="operator" data-function="negate">&pm;</td>
+                <td data-type="operator" data-function="percent">%</td>
+                <td data-type="operator" data-function="divide" class="right">/</td>
+            </tr>
+            <tr>
+                <td data-type="number">7</td>
+                <td data-type="number">8</td>
+                <td data-type="number">9</td>
+                <td data-type="operator" class="right" data-function="multiply">x</td>
+            </tr>
+            <tr>
+                <td data-type="number">4</td>
+                <td data-type="number">5</td>
+                <td data-type="number">6</td>
+                <td data-type="operator"class="right" data-function="subtract">-</td>
+            </tr>
+            <tr>
+                <td data-type="number">1</td>
+                <td data-type="number">2</td>
+                <td data-type="number">3</td>
+                <td data-type="operator"class="right" data-function="add">+</td>
+            </tr>
+            <tr>
+                <td colspan="2" data-type="number">0</td>
+                <td data-type="operator" data-function="decm-point">.</td>
+                <td data-type="operator"class="right" data-function="result">=</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
