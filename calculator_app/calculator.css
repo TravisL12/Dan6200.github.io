@@ -26,7 +26,7 @@ th {
     padding-right: 40px;
     padding-top: 5px;
     text-align: right;
-    font-size: 1.5em;
+    font-size: 1.5em;    
     font-weight: 600;
 }
 
@@ -72,4 +72,19 @@ td:hover {
         height: 25vh;
     }
 }
+
+@media screen and (max-height: 768px)  {
+    table {
+        height: 80vh;
+        width: 56vw;
+        max-width: 560px;
+        min-width: 168px;
+        font-size: 2em;
+    }
+    thead {
+        height: 20vh;
+        font-size: 1.2em;
+    }
+}
+
 
