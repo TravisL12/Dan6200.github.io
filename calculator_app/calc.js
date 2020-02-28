@@ -87,8 +87,6 @@ class Calculator {
     calculate(value) {
         
         try {
-            if (value.toString().length < 3 && value[0] != '-') value = value.slice(1);
-            
             
             this.input(this.inputstream);
             let result = eval(value); 
@@ -96,7 +94,7 @@ class Calculator {
             this.print2Screen(result);
         } catch(e) {
             this.print2Screen(e);
-            throw e;
+         
         }             
                
     }
