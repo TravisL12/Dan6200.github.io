@@ -47,7 +47,7 @@ class Calculator {
               screen.innerHTML = '';
               break;
             case 'multiply':
-              this.inputstream = `(${this.inputstream}) *` ;
+              this.inputstream += '*' ;
               screen.innerHTML = '';
               calc.lastElementChild.children[1].lastElementChild.innerHTML = '^';
               if (this.toExp) {
