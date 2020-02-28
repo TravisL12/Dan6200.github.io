@@ -47,7 +47,7 @@ class Calculator {
               screen.innerHTML = '';
               break;
             case 'multiply':
-              this.inputstream += '*';
+              this.inputstream = `(${this.inputstream}) *` ;
               screen.innerHTML = '';
               calc.lastElementChild.children[1].lastElementChild.innerHTML = '^';
               if (this.toExp) {
@@ -56,7 +56,7 @@ class Calculator {
               this.toExp = true;
               break;
             case 'divide':
-              this.inputstream += '/';
+              this.inputstream = `(${this.inputstream})/`;
               screen.innerHTML = '';
               break;
             case 'negate':
@@ -65,7 +65,7 @@ class Calculator {
                 break;
             case 'percent':
                 this.inputstream += ' * 0.01';
-                screen.innerHTML = '';
+                screen.innerHTML += '%';
                 break;
             case 'decm-point':
                 this.print2Screen('.');
@@ -87,9 +87,9 @@ class Calculator {
     calculate(value) {
         
         try {
-            if (value.toString().length < 3 && isNaN(value[0]) && value[0] != '-') value = value.slice(1);
+            if (value.toString().length < 3 && value[0] != '-') value = value.slice(1);
             
-
+            
             this.input(this.inputstream);
             let result = eval(value); 
             this.inputstream = result;      
