@@ -2,6 +2,7 @@ class Calculator {
     constructor() {
         this.overwrite = true; //overwrite functionality
         this.inputstream = '';
+        this.toExp = false;
     }
 
     handleEvent(event) {
@@ -18,6 +19,10 @@ class Calculator {
 
         if (datatype == 'operator') this.compute(_function);
          
+        if (_function != "multiply") {
+            this.toExp = false;
+            calc.lastElementChild.children[1].lastElementChild.innerHTML = 'x';
+        }
                 
     }
 
@@ -44,13 +49,18 @@ class Calculator {
             case 'multiply':
               this.inputstream += '*';
               screen.innerHTML = '';
+              calc.lastElementChild.children[1].lastElementChild.innerHTML = '^';
+              if (this.toExp) {
+                  this.toExp = false;
+              }
+              this.toExp = true;
               break;
             case 'divide':
               this.inputstream += '/';
               screen.innerHTML = '';
               break;
             case 'negate':
-                this.inputstream = '-' + '(' + this.inputstream + ')';
+                this.inputstream = `- (${this.inputstream})`;
                 screen.innerHTML = '-' + screen.innerHTML;
                 break;
             case 'percent':
@@ -80,8 +90,9 @@ class Calculator {
             if (isNaN(value[0]) && value[0] != '-') value = value.slice(1);
             
 
-            this.input(value)
-            let result = eval(value);       
+            this.input(this.inputstream);
+            let result = eval(value); 
+            this.inputstream = result;      
             this.print2Screen(result);
         } catch(e) {
             this.print2Screen(e);
@@ -98,6 +109,8 @@ class Calculator {
         let valueIsNegtv;  
 
         if (isFinite(values) && values.toString().length > 9) {
+
+            
             
             if (values < 0) {
                 values = values.toString().slice(1);
@@ -147,6 +160,7 @@ class Calculator {
 }
 
 let calcHandler = new Calculator();
+
 let calc = document.getElementById('calculator');
 let screen = document.getElementById('screen');
 let subscreen = document.getElementById('subscreen')
