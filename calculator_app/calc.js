@@ -87,7 +87,7 @@ class Calculator {
     calculate(value) {
         
         try {
-            if (isNaN(value[0]) && value[0] != '-') value = value.slice(1);
+            if (value.toString().length < 3 && isNaN(value[0]) && value[0] != '-') value = value.slice(1);
             
 
             this.input(this.inputstream);
