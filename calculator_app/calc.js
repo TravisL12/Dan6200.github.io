@@ -96,6 +96,7 @@ class Calculator {
             this.print2Screen(result);
         } catch(e) {
             this.print2Screen(e);
+            throw e;
         }             
                
     }
