@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./instagram.css">
+    <title>InstaTag</title>
+</head>
+<body>
+    <div id="loadbar" class="hidden"></div>
+    <h1 id="heading"><em>Insta-Tag Slideshow</h1>
+    
+    <div class="search-bar">
+        <input type="text" id="search" style="width:600px;height:40px;font-size: 1.6em;" placeholder='...try "#fashion", "#cats" or "#nyc"' autocomplete="off">
+        <input type="submit" value="submit" id="submit" style="font-size: 1.2em; margin-left: 20px;width:100px;height:40px;">
+    </div>
+
+    <div id = "container"></div>
+
+    <footer>
+        <button id="button" style="outline: none;"class="hidden">
+            <img src="./pause.svg" id='pause'>
+            <img src="./play.svg" class ="hidden" id="play"> 
+        </button>
+    </footer>
+    <script src="./instagram.js"></script>
+    <script>
+        const searchBar = document.querySelector('.search-bar');
+        const heading = document.getElementById('heading');
+
+        search.onclick = () => {
+            let n = 20;
+            loadbar.classList.toggle('hidden');
+            let int = setInterval(() =>{
+                loadbar.style.width = `${n++}%`;
+            }, 10)
+            setTimeout(() => {
+                heading.classList.add('hidden');
+                searchBar.style.cssText += `position: fixed; top: 50px;`
+                document.body.style.backgroundColor = "blanchedalmond";
+                loadbar.classList.toggle('hidden');
+                submit.style.cssText += `background-color: rgb(133, 131, 131); box-shadow: silver;`;
+                startSlideShow();
+                clearInterval(int);
+            }, 1000); 
+        }
+       
+    </script>
+</body>
+</html>
