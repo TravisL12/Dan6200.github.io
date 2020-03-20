@@ -4,18 +4,52 @@ function startSlideShow() {
   const button = document.getElementById('button');
   const play = document.getElementById('play');
   const pause = document.getElementById('pause');
-
-  search.onclick = null;
-  search.onkeydown = e => {
-    if (e.code == "Enter") showSlides();
-    let keys = new Map();
-    keys.set('Tab', "#fashion");
-    if (e.code == 'Tab') {
-        e.preventDefault();
-        if (keys.has(e.code)) {
-          search.value = keys.get(e.code);
-        }
+  
+  document.onclick = (e) => {
+    if (e.target.id == 'search') return;
+    dropdown.classList.toggle('hidden', true);
+  }
+  document.onkeydown = (e) => {
+    if (event.code == "Space") {
+      togglePause();
+      event.preventDefault();
+      return;
     }
+    if (e.target.id == 'search' && e.code != "Enter") return;
+    dropdown.classList.toggle('hidden', true);
+  }
+
+  dropdown.onclick = (e) => {
+    if (e.target.tagName != "P") return;
+    search.value = e.target.firstChild.data.slice(1, -1);
+    showSlides();
+  } 
+  
+  search.onclick = () => {
+    dropdown.classList.toggle('hidden');
+    dropdown.style.top = search.getBoundingClientRect().bottom + 5 + 'px';
+    dropdown.style.left = search.getBoundingClientRect().left + 'px';
+  }
+
+  let i = -1;
+  search.onkeydown = e => {
+    if (e.code == "Enter" || e.code == 'Tab') {
+      showSlides();
+      return;
+    }
+    if (e.code.slice(0,5) != 'Arrow') return;
+      dropdown.classList.remove('hidden');
+      dropdown.style.top = search.getBoundingClientRect().bottom + 5 + 'px';
+      dropdown.style.left = search.getBoundingClientRect().left + 'px';
+      if (e.code == 'ArrowDown') i++;
+      if (e.code == 'ArrowUp') i--;
+      let p = document.querySelectorAll('.dropdown > p');
+      if (i > p.length-1) i = 0;
+      if (i < 0) i = p.length-1;
+      for (let elem of p) elem.style.backgroundColor = "";
+      p[i].style.backgroundColor = 'rgba(0, 0, 0, 0.055)';
+      search.value = p[i].firstChild.data.slice(1, -1);
+    
   }
 
   let t,
@@ -48,24 +82,21 @@ function startSlideShow() {
     togglePause();
   }
 
-  document.addEventListener('keydown', event => {
-    if (event.code == "Space") {
-      togglePause();
-      event.preventDefault();
-    }
-  })
-
   document.addEventListener('mousewheel', event => {               
     (event.deltaY > 0) ? window.scrollBy(100, 0) : window.scrollBy(-500, 0);                
   })
 
-  submit.onclick = () => showSlides();
+  submit.onclick = () => {
+    showSlides();
+  }
 
   
   let showSlides = async function () {
       // Buttons
     togglePause();
-
+    if (document.onscroll) {
+      document.removeEventListener('scroll', pageLoader);
+    }
     // check searchbar format
     if(search.value[0] != '#') {
       alert("Not a hashtag...");
@@ -82,13 +113,13 @@ function startSlideShow() {
       if (response.status == 429) throw Error ('Too many requests... try again later');
       if (!response.ok) throw Error ('Page not found... try again');
       let obj = await response.json();
-      container.innerHTML = "";
+      setTimeout(() => container.innerHTML = "", 500);
       for (let i = 0; i < obj.data.hashtag.edge_hashtag_to_media.edges.length; i++)
       {
           let img = document.createElement('img')
           const src = obj.data.hashtag.edge_hashtag_to_media.edges[i].node.display_url;
           img.src = src;
-          container.append(img);
+          setTimeout(() => container.append(img), 500);
           button.classList.remove('hidden');
       }
       togglePause();
@@ -98,7 +129,7 @@ function startSlideShow() {
       
       setTimeout(() => {
         document.addEventListener('scroll', pageLoader);
-      }, 3000)
+      }, 5000)
       function pageLoader() {
         let scrollRight = document.documentElement.scrollWidth - (
           document.documentElement.scrollLeft + document.documentElement.clientWidth
@@ -120,14 +151,14 @@ function startSlideShow() {
             img.remove();
             for (let i = 0; i < object.data.hashtag.edge_hashtag_to_media.edges.length; i++)
             {
-              let img = document.createElement('img')
-              container.append(img); 
+              let img = document.createElement('img');
               const src = object.data.hashtag.edge_hashtag_to_media.edges[i].node.display_url;
-              img.src = src;               
+              img.src = src;  
+              container.append(img);            
             }
             return object;
           }).then((obj) => {
-            url = `https://www.instagram.com/graphql/query/?query_hash=463d0b9e24ab084f46514747d53bcb0d&variables={"tag_name":"${search.value.slice(1).toLowerCase()}","first":10,"after":"${obj.data.hashtag.edge_hashtag_to_media.page_info.end_cursor}"}`;
+            url = `https://www.instagram.com/graphql/query/?query_hash=463d0b9e24ab084f46514747d53bcb0d&variables={"tag_name":"${search.value.slice(1).toLowerCase()}","first":5,"after":"${obj.data.hashtag.edge_hashtag_to_media.page_info.end_cursor}"}`;
           })           
         }
       }
