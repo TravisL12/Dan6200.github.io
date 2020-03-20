@@ -8,15 +8,25 @@
 </head>
 <body>
     <div id="loadbar" class="hidden"></div>
-    <h1 id="heading"><em>InstaTag Slideshow</h1>
+    <h1 id="heading"><em>InstaTag Slideshow</em></h1>
     
     <div class="search-bar">
-        <input type="text" id="search" style="width:600px;height:40px;font-size: 1.6em;" placeholder='...try "#fashion", "#cats" or "#nyc"' autocomplete="off">
-        <input type="submit" value="submit" id="submit" style="font-size: 1.2em; margin-left: 20px;width:100px;height:40px;">
+        <input type="text" id="search" class="search" autocomplete="off" autocorrect="off" spellcheck="false">
+        <input type="submit" value="search" id="submit" class="search-button">
     </div>
-
+    <div id="dropdown" class="dropdown hidden">
+        <p>"#fashion"</p>
+        <P>"#cats"</P>
+        <p>"#nyc"</p>
+        <p>"#instagood"</p>
+        <p>"#love"</p>
+        <p>"#dogs"</p>
+        <p>"#photooftheday"</p>
+        <p>"#cute"</p>
+        <p>"#tbt"</p>
+        <p>"#covid19"</p>
+    </div>
     <div id = "container"></div>
-
     <footer>
         <button id="button" style="outline: none;"class="hidden">
             <img src="./pause.svg" id='pause'>
@@ -27,6 +37,7 @@
     <script>
         const searchBar = document.querySelector('.search-bar');
         const heading = document.getElementById('heading');
+        const dropdown = document.querySelector("#dropdown");
 
         search.onclick = () => {
             let n = 20;
@@ -36,15 +47,21 @@
             }, 10)
             setTimeout(() => {
                 heading.classList.add('hidden');
-                searchBar.style.cssText += `position: fixed; top: 50px;`
+                searchBar.style.cssText += `position: fixed; top: 50px;`; 
+                dropdown.classList.toggle('hidden');
+                dropdown.style.top = search.getBoundingClientRect().bottom + 5 + 'px';
+                dropdown.style.left = search.getBoundingClientRect().left + 'px';
                 document.body.style.backgroundColor = "blanchedalmond";
                 loadbar.classList.toggle('hidden');
                 submit.style.cssText += `background-color: rgb(133, 131, 131); box-shadow: silver;`;
                 startSlideShow();
-                clearInterval(int);
+                clearInterval(int);                
             }, 1000); 
         }
        
+        window.addEventListener('resize', function() {
+            dropdown.classList.add('hidden');
+        });
     </script>
 </body>
 </html>

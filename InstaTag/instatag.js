@@ -1,21 +1,62 @@
 function startSlideShow() {
   'use strict';
+  let scrollEvent = null;
+  let pageLoader;
+  let cachePageLoader = new Map ();
+
   const search = document.getElementById('search');
   const button = document.getElementById('button');
   const play = document.getElementById('play');
   const pause = document.getElementById('pause');
-
-  search.onclick = null;
-  search.onkeydown = e => {
-    if (e.code == "Enter") showSlides();
-    let keys = new Map();
-    keys.set('Tab', "#fashion");
-    if (e.code == 'Tab') {
-        e.preventDefault();
-        if (keys.has(e.code)) {
-          search.value = keys.get(e.code);
-        }
+  
+  document.onclick = (e) => {
+    if (e.target.id == 'search') return;
+    dropdown.classList.toggle('hidden', true);
+  }
+  document.onkeydown = (e) => {
+    if (event.code == "Space") {
+      togglePause();
+      event.preventDefault();
+      return;
     }
+    if (e.target.id == 'search' && e.code != "Enter") return;
+    dropdown.classList.toggle('hidden', true);
+    if (e.code == 'ArrowLeft') window.scrollBy(-500, 0);
+    
+    if (e.code == 'ArrowRight') window.scrollBy(500, 0);
+  }
+
+  dropdown.onclick = (e) => {
+    if (e.target.tagName != "P") return;
+    search.value = e.target.firstChild.data.slice(1, -1);
+    showSlides();
+  } 
+  
+  search.onclick = () => {
+    dropdown.classList.toggle('hidden');
+    dropdown.style.top = search.getBoundingClientRect().bottom + 5 + 'px';
+    dropdown.style.left = search.getBoundingClientRect().left + 'px';
+  }
+
+  let i = -1;
+  search.onkeydown = e => {
+    if (e.code == "Enter" || e.code == 'Tab') {
+      showSlides();
+      return;
+    }
+    if (e.code.slice(0,5) != 'Arrow') return;
+      dropdown.classList.remove('hidden');
+      dropdown.style.top = search.getBoundingClientRect().bottom + 5 + 'px';
+      dropdown.style.left = search.getBoundingClientRect().left + 'px';
+      if (e.code == 'ArrowDown') i++;
+      if (e.code == 'ArrowUp') i--;
+      let p = document.querySelectorAll('.dropdown > p');
+      if (i > p.length-1) i = 0;
+      if (i < 0) i = p.length-1;
+      for (let elem of p) elem.style.backgroundColor = "";
+      p[i].style.backgroundColor = 'rgba(0, 0, 0, 0.055)';
+      search.value = p[i].firstChild.data.slice(1, -1);
+    
   }
 
   let t,
@@ -48,24 +89,22 @@ function startSlideShow() {
     togglePause();
   }
 
-  document.addEventListener('keydown', event => {
-    if (event.code == "Space") {
-      togglePause();
-      event.preventDefault();
-    }
-  })
-
   document.addEventListener('mousewheel', event => {               
     (event.deltaY > 0) ? window.scrollBy(100, 0) : window.scrollBy(-500, 0);                
   })
 
-  submit.onclick = () => showSlides();
+  submit.onclick = () => {
+    showSlides();
+  }
 
-  
   let showSlides = async function () {
       // Buttons
     togglePause();
-
+    if (scrollEvent) {
+      document.removeEventListener('scroll', pageLoader);
+      scrollEvent = false; 
+      cachePageLoader.clear();
+    }
     // check searchbar format
     if(search.value[0] != '#') {
       alert("Not a hashtag...");
@@ -82,31 +121,32 @@ function startSlideShow() {
       if (response.status == 429) throw Error ('Too many requests... try again later');
       if (!response.ok) throw Error ('Page not found... try again');
       let obj = await response.json();
-      container.innerHTML = "";
+      setTimeout(() => container.innerHTML = "", 1000);
       for (let i = 0; i < obj.data.hashtag.edge_hashtag_to_media.edges.length; i++)
       {
-          let img = document.createElement('img')
+          let img = document.createElement('img');
           const src = obj.data.hashtag.edge_hashtag_to_media.edges[i].node.display_url;
           img.src = src;
-          container.append(img);
+          setTimeout(() => container.append(img), 1000);
           button.classList.remove('hidden');
       }
+
       togglePause();
 
       url = `https://www.instagram.com/graphql/query/?query_hash=463d0b9e24ab084f46514747d53bcb0d&variables={"tag_name":"${search.value.slice(1).toLowerCase()}","first":5,"after":"${obj.data.hashtag.edge_hashtag_to_media.page_info.end_cursor}"}`;
 
-      
       setTimeout(() => {
         document.addEventListener('scroll', pageLoader);
-      }, 3000)
-      function pageLoader() {
+      }, 5000);
+
+      pageLoader = function () {
         let scrollRight = document.documentElement.scrollWidth - (
           document.documentElement.scrollLeft + document.documentElement.clientWidth
         );
                 
-        if (scrollRight < 1000 && obj.data.hashtag.edge_hashtag_to_media.page_info.has_next_page) 
+        if (scrollRight < 1500 && obj.data.hashtag.edge_hashtag_to_media.page_info.has_next_page) 
         {
-          container.insertAdjacentHTML('beforeend', `<img src="placeholder.svg" width="128" height="128" data-src="real.jpg">`);
+         container.insertAdjacentHTML('beforeend', `<img src="placeholder.svg" width="128" height="128" data-src="real.jpg">`);
 
           fetch(url)
           .then(
@@ -120,48 +160,43 @@ function startSlideShow() {
             img.remove();
             for (let i = 0; i < object.data.hashtag.edge_hashtag_to_media.edges.length; i++)
             {
-              let img = document.createElement('img')
-              container.append(img); 
+              let img = document.createElement('img');
               const src = object.data.hashtag.edge_hashtag_to_media.edges[i].node.display_url;
-              img.src = src;               
+              img.src = src;  
+              container.append(img);            
             }
             return object;
           }).then((obj) => {
-            url = `https://www.instagram.com/graphql/query/?query_hash=463d0b9e24ab084f46514747d53bcb0d&variables={"tag_name":"${search.value.slice(1).toLowerCase()}","first":10,"after":"${obj.data.hashtag.edge_hashtag_to_media.page_info.end_cursor}"}`;
+            url = `https://www.instagram.com/graphql/query/?query_hash=463d0b9e24ab084f46514747d53bcb0d&variables={"tag_name":"${search.value.slice(1).toLowerCase()}","first":5,"after":"${obj.data.hashtag.edge_hashtag_to_media.page_info.end_cursor}"}`;
           })           
         }
+        scrollEvent = true;
       }
 
       let throttle = function (f, ms) {
         let throttled = false;
-        let cache = new Map ();
-    
         return function wrapper() {
           if (throttled) {
-            cache.set(this, arguments);
+            cachePageLoader.set(this, arguments);
             return;
           }
-    
           f.apply(this, arguments);
           throttled = true;
           setTimeout(() => {
             throttled = false;
-            if (!cache.has(this)) return;
-            wrapper.apply(this, cache.get(this));
-            cache.clear();
+            if (!cachePageLoader.has(this)) return;
+            wrapper.apply(this, cachePageLoader.get(this));
+            cachePageLoader.clear();
           }, ms);
         }
       };
-
       pageLoader = throttle (pageLoader, 2000);
 
     } catch (e) {
       alert (e);
       setTimeout(() => container.innerHTML = "", 500);
     }   
-
   }
-  
 }
 
         
