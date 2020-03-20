@@ -97,7 +97,6 @@ function startSlideShow() {
     showSlides();
   }
 
-  
   let showSlides = async function () {
       // Buttons
     togglePause();
@@ -136,7 +135,6 @@ function startSlideShow() {
 
       url = `https://www.instagram.com/graphql/query/?query_hash=463d0b9e24ab084f46514747d53bcb0d&variables={"tag_name":"${search.value.slice(1).toLowerCase()}","first":5,"after":"${obj.data.hashtag.edge_hashtag_to_media.page_info.end_cursor}"}`;
 
-      
       setTimeout(() => {
         document.addEventListener('scroll', pageLoader);
       }, 5000);
@@ -177,8 +175,6 @@ function startSlideShow() {
 
       let throttle = function (f, ms) {
         let throttled = false;
-        
-    
         return function wrapper() {
           if (throttled) {
             cachePageLoader.set(this, arguments);
@@ -194,16 +190,13 @@ function startSlideShow() {
           }, ms);
         }
       };
-
       pageLoader = throttle (pageLoader, 2000);
 
     } catch (e) {
       alert (e);
       setTimeout(() => container.innerHTML = "", 500);
     }   
-
   }
-  
 }
 
         
