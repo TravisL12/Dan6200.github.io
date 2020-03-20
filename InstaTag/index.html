@@ -26,11 +26,7 @@
         <p>"#tbt"</p>
         <p>"#covid19"</p>
     </div>
-
-    
-
     <div id = "container"></div>
-
     <footer>
         <button id="button" style="outline: none;"class="hidden">
             <img src="./pause.svg" id='pause'>
@@ -43,7 +39,6 @@
         const heading = document.getElementById('heading');
         const dropdown = document.querySelector("#dropdown");
 
-        
         search.onclick = () => {
             let n = 20;
             loadbar.classList.toggle('hidden');
@@ -60,17 +55,13 @@
                 loadbar.classList.toggle('hidden');
                 submit.style.cssText += `background-color: rgb(133, 131, 131); box-shadow: silver;`;
                 startSlideShow();
-                clearInterval(int);
-                
-                
+                clearInterval(int);                
             }, 1000); 
         }
        
         window.addEventListener('resize', function() {
             dropdown.classList.add('hidden');
-            
-        })
-        
+        });
     </script>
 </body>
 </html>
