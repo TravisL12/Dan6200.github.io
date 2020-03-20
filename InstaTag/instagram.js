@@ -1,5 +1,9 @@
 function startSlideShow() {
   'use strict';
+  let scrollEvent = null;
+  let pageLoader;
+  let cachePageLoader = new Map ();
+
   const search = document.getElementById('search');
   const button = document.getElementById('button');
   const play = document.getElementById('play');
@@ -17,6 +21,9 @@ function startSlideShow() {
     }
     if (e.target.id == 'search' && e.code != "Enter") return;
     dropdown.classList.toggle('hidden', true);
+    if (e.code == 'ArrowLeft') window.scrollBy(-500, 0);
+    
+    if (e.code == 'ArrowRight') window.scrollBy(500, 0);
   }
 
   dropdown.onclick = (e) => {
@@ -94,8 +101,10 @@ function startSlideShow() {
   let showSlides = async function () {
       // Buttons
     togglePause();
-    if (document.onscroll) {
+    if (scrollEvent) {
       document.removeEventListener('scroll', pageLoader);
+      scrollEvent = false; 
+      cachePageLoader.clear();
     }
     // check searchbar format
     if(search.value[0] != '#') {
@@ -113,15 +122,16 @@ function startSlideShow() {
       if (response.status == 429) throw Error ('Too many requests... try again later');
       if (!response.ok) throw Error ('Page not found... try again');
       let obj = await response.json();
-      setTimeout(() => container.innerHTML = "", 500);
+      setTimeout(() => container.innerHTML = "", 1000);
       for (let i = 0; i < obj.data.hashtag.edge_hashtag_to_media.edges.length; i++)
       {
-          let img = document.createElement('img')
+          let img = document.createElement('img');
           const src = obj.data.hashtag.edge_hashtag_to_media.edges[i].node.display_url;
           img.src = src;
-          setTimeout(() => container.append(img), 500);
+          setTimeout(() => container.append(img), 1000);
           button.classList.remove('hidden');
       }
+
       togglePause();
 
       url = `https://www.instagram.com/graphql/query/?query_hash=463d0b9e24ab084f46514747d53bcb0d&variables={"tag_name":"${search.value.slice(1).toLowerCase()}","first":5,"after":"${obj.data.hashtag.edge_hashtag_to_media.page_info.end_cursor}"}`;
@@ -129,15 +139,16 @@ function startSlideShow() {
       
       setTimeout(() => {
         document.addEventListener('scroll', pageLoader);
-      }, 5000)
-      function pageLoader() {
+      }, 5000);
+
+      pageLoader = function () {
         let scrollRight = document.documentElement.scrollWidth - (
           document.documentElement.scrollLeft + document.documentElement.clientWidth
         );
                 
-        if (scrollRight < 1000 && obj.data.hashtag.edge_hashtag_to_media.page_info.has_next_page) 
+        if (scrollRight < 1500 && obj.data.hashtag.edge_hashtag_to_media.page_info.has_next_page) 
         {
-          container.insertAdjacentHTML('beforeend', `<img src="placeholder.svg" width="128" height="128" data-src="real.jpg">`);
+         container.insertAdjacentHTML('beforeend', `<img src="placeholder.svg" width="128" height="128" data-src="real.jpg">`);
 
           fetch(url)
           .then(
@@ -161,25 +172,25 @@ function startSlideShow() {
             url = `https://www.instagram.com/graphql/query/?query_hash=463d0b9e24ab084f46514747d53bcb0d&variables={"tag_name":"${search.value.slice(1).toLowerCase()}","first":5,"after":"${obj.data.hashtag.edge_hashtag_to_media.page_info.end_cursor}"}`;
           })           
         }
+        scrollEvent = true;
       }
 
       let throttle = function (f, ms) {
         let throttled = false;
-        let cache = new Map ();
+        
     
         return function wrapper() {
           if (throttled) {
-            cache.set(this, arguments);
+            cachePageLoader.set(this, arguments);
             return;
           }
-    
           f.apply(this, arguments);
           throttled = true;
           setTimeout(() => {
             throttled = false;
-            if (!cache.has(this)) return;
-            wrapper.apply(this, cache.get(this));
-            cache.clear();
+            if (!cachePageLoader.has(this)) return;
+            wrapper.apply(this, cachePageLoader.get(this));
+            cachePageLoader.clear();
           }, ms);
         }
       };
