@@ -3,34 +3,37 @@
     outline: none;
 }
 
+html{
+    overflow: hidden;
+    height: 100vh;
+}
+
 body {
     padding: 0;
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: paleturquoise;
-    overflow-y: hidden;
-    height: 100%;
+    background-color: paleturquoise;  
 }
-
 h1{
-    font-size: 80px;
+    font-size: 6em;
     font-family: monospace;
     margin: 10% auto 3%;
     width: fit-content;
 }
-
 #container {
     display: flex;
     width: 100%;
-    margin: 200px auto;
+    margin: 12.5em auto;
     align-content: center;
 }
 
 #container img {
+    
     flex: 1;
+    max-width: 100%;
     height: 500px;
     position: relative;
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
     margin-right: 5px;
 }
@@ -68,7 +71,6 @@ button img {
     justify-content: center;
     
 }
-
 .dropdown {
     background-color: rgba(255, 255, 255, 0.959);
     box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
@@ -79,7 +81,6 @@ button img {
     position: fixed;
     z-index: 1;
 }
-
 .dropdown p{
     padding: 10px;
     margin: 0;
@@ -88,6 +89,7 @@ button img {
 .dropdown p:hover {
     background-color: rgba(0, 0, 0, 0.1);
 }
+
 
 .search {
     width:500px;
@@ -124,15 +126,17 @@ button img {
 
 
 
-@media (min-width: 768px) and (max-width: 1024px) {
+  @media (min-width: 768px) and (max-width: 1024px) {  
     
     h1{
         font-size: 5em;
     }
+
     #container {
         display: flex;
-        margin: 156px auto;
+        margin: 9.75em auto;
     } 
+
     .search {
         width: 560px;
         height:40px;       
@@ -145,8 +149,8 @@ button img {
         width: 92px;
         height:36px;
     }
-    .dropdown {
-        background-color: rgba(255, 255, 255, 0.959);
+    .dropdown { 
+       background-color: rgba(255, 255, 255, 0.959);
         box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
         width: 560px;
         color: black;
@@ -155,14 +159,17 @@ button img {
         position: fixed;
         z-index: 1;
     }    
+    
     #container img {
         flex: 1;
-        height: 600px;
+        height: 35em;
+        width: auto;
         position: relative;
         display: inline-flex;
         flex-wrap: wrap;
         margin-right: 5px;
     }
+
     footer {
         width: 100%;
         height: 15%;
@@ -170,10 +177,55 @@ button img {
         bottom: 0;
         display: flex;
         justify-content: center;
-    } 
+    }
+    
     button img {
         width: 100px;
         height: 100px;
     }
-    
+}
+
+
+@media  (max-width: 768px) {  
+    h1{
+        font-size: 2.75em;
+        font-weight: 900;
+        margin: 40% auto 9%;
+        text-align: center;
+    }
+
+    #container {
+        display: flex;
+        margin: 50% auto 20%;
+    } 
+
+    .search {
+        width: 80%;
+        height:40px;       
+        font-size: 1.3em;
+    }
+
+    .search-button { 
+        display: none;
+    }
+
+    .dropdown { 
+        height: 60%;
+         width: 80%;
+        overflow: hidden;
+    }
+
+    #container img {
+        height: 15em;
+        width: auto;
+        position: relative;
+        display: inline-flex;
+        flex-wrap: wrap;
+        margin-right: 5px;
+    }
+
+    button img {
+        width: 40%;
+        height: 40%;
+    }
 }
